@@ -1,4 +1,5 @@
 import type { AxiosAdapter } from 'axios'
+import { filterClients } from './clients'
 import { buildCanonicalPayload, hashCanonical } from './hash'
 import type {
   DashboardKpis,
@@ -513,6 +514,16 @@ export const demoAdapter: AxiosAdapter = async (config) => {
 
   if (method === 'get' && path.endsWith('/dashboard')) {
     return respond(ok(dashboardOf(state)))
+  }
+
+  if (method === 'get' && path.endsWith('/clients')) {
+    const fromUrl = params.get('q')
+    const fromConfig =
+      config.params && typeof config.params === 'object' && 'q' in config.params
+        ? String((config.params as { q?: unknown }).q ?? '')
+        : ''
+    await new Promise((resolve) => setTimeout(resolve, 160))
+    return respond(ok(filterClients(fromUrl ?? fromConfig)))
   }
 
   if (method === 'get' && path.endsWith('/proposals')) {

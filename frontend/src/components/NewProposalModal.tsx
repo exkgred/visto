@@ -1,7 +1,9 @@
 import { FormEvent, useEffect, useId, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Trash2, X } from 'lucide-react'
+import { ClientSearch } from '@/components/ClientSearch'
 import { api, errorMessage, unwrap } from '@/lib/api'
+import type { Client } from '@/lib/clients'
 import type { Envelope, Proposal } from '@/lib/types'
 import { useUiStore } from '@/stores/ui'
 
@@ -24,8 +26,7 @@ export function NewProposalModal() {
   const open = useUiStore((s) => s.newProposalOpen)
   const close = useUiStore((s) => s.closeNewProposal)
   const titleId = useId()
-  const [clientName, setClientName] = useState('')
-  const [clientEmail, setClientEmail] = useState('')
+  const [client, setClient] = useState<Client | null>(null)
   const [message, setMessage] = useState('')
   const [validUntil, setValidUntil] = useState(defaultValidUntil)
   const [items, setItems] = useState<ItemDraft[]>([emptyItem()])
@@ -34,8 +35,7 @@ export function NewProposalModal() {
 
   useEffect(() => {
     if (!open) return
-    setClientName('')
-    setClientEmail('')
+    setClient(null)
     setMessage('')
     setValidUntil(defaultValidUntil())
     setItems([emptyItem()])
@@ -60,12 +60,16 @@ export function NewProposalModal() {
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
+    if (!client) {
+      setError('Selecione um cliente da lista')
+      return
+    }
     setError('')
     setBusy(true)
     try {
       const { data } = await api.post<Envelope<Proposal>>('/proposals', {
-        clientName,
-        clientEmail,
+        clientName: client.name,
+        clientEmail: client.email,
         message: message || undefined,
         validUntil: new Date(`${validUntil}T23:59:59`).toISOString(),
         items: items.map((item) => ({
@@ -122,29 +126,11 @@ export function NewProposalModal() {
           </button>
         </header>
 
+        <div className="relative z-10 px-5 pt-5 sm:px-6">
+          <ClientSearch selected={client} onSelect={setClient} />
+        </div>
+
         <div className="space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="text-sm text-ink-muted">
-              Cliente
-              <input
-                required
-                autoFocus
-                className="field"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-              />
-            </label>
-            <label className="text-sm text-ink-muted">
-              E-mail
-              <input
-                required
-                type="email"
-                className="field"
-                value={clientEmail}
-                onChange={(e) => setClientEmail(e.target.value)}
-              />
-            </label>
-          </div>
           <label className="block text-sm text-ink-muted">
             Validade
             <input
