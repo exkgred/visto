@@ -14,8 +14,10 @@ import {
   timeAgo,
 } from '@/lib/brand'
 import type { DashboardKpis, Envelope, Proposal } from '@/lib/types'
+import { useUiStore } from '@/stores/ui'
 
 export default function InboxPage() {
+  const openNewProposal = useUiStore((s) => s.openNewProposal)
   const [kpis, setKpis] = useState<DashboardKpis | null>(null)
   const [proposals, setProposals] = useState<Proposal[]>([])
   const [error, setError] = useState('')
@@ -36,7 +38,7 @@ export default function InboxPage() {
   if (!kpis) return <p className="text-ink-muted">Carregando caixa…</p>
 
   const cards = [
-    { label: 'Aguardando lacre', value: money(kpis.pendingAmount), hint: 'enviadas + vistas' },
+    { label: 'Aguardando aceite', value: money(kpis.pendingAmount), hint: 'enviadas + vistas' },
     { label: 'Aceitas', value: money(kpis.acceptedAmount), hint: `${kpis.acceptedCount} handoffs ao VendaCore` },
     {
       label: 'Rascunhos',
@@ -55,9 +57,9 @@ export default function InboxPage() {
             O Nexo manda. O cliente abre o link. O aceite trava o hash e aponta para o VendaCore.
           </p>
         </div>
-        <Link to="/propostas/nova" className="btn-seal">
+        <button type="button" className="btn-seal" onClick={openNewProposal}>
           <Plus size={16} /> Nova proposta
-        </Link>
+        </button>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-3">

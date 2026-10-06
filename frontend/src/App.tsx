@@ -1,24 +1,31 @@
 import { useEffect } from 'react'
-import { NavLink, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { FileStack, LogOut, Plus } from 'lucide-react'
 import { BrandMark } from '@/components/BrandMark'
+import { NewProposalModal } from '@/components/NewProposalModal'
 import { initials, ROLE_LABEL } from '@/lib/brand'
 import { useAuthStore } from '@/stores/auth'
+import { useUiStore } from '@/stores/ui'
 import LoginPage from '@/pages/LoginPage'
 import InboxPage from '@/pages/InboxPage'
-import NewProposalPage from '@/pages/NewProposalPage'
 import ProposalDetailPage from '@/pages/ProposalDetailPage'
 import PublicProposalPage from '@/pages/PublicProposalPage'
 
-const NAV = [
-  { to: '/', label: 'Caixa', icon: FileStack },
-  { to: '/propostas/nova', label: 'Nova', icon: Plus },
-] as const
+function OpenNewProposal() {
+  const openNewProposal = useUiStore((s) => s.openNewProposal)
+  useEffect(() => {
+    openNewProposal()
+  }, [openNewProposal])
+  return <Navigate to="/" replace />
+}
 
 function Layout({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
+  const newProposalOpen = useUiStore((s) => s.newProposalOpen)
+  const openNewProposal = useUiStore((s) => s.openNewProposal)
+  const closeNewProposal = useUiStore((s) => s.closeNewProposal)
 
   return (
     <div className="min-h-dvh pb-24 md:pb-0">
@@ -28,18 +35,22 @@ function Layout({ children }: { children: React.ReactNode }) {
             <BrandMark size={32} />
           </NavLink>
           <nav className="hidden items-center gap-1 text-sm text-ink-muted md:flex">
-            {NAV.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === '/'}
-                className={({ isActive }) =>
-                  `rounded-lg px-3 py-2 ${isActive ? 'bg-seal-soft text-seal' : 'hover:bg-canvas hover:text-ink'}`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `rounded-lg px-3 py-2 ${isActive && !newProposalOpen ? 'bg-seal-soft text-seal' : 'hover:bg-canvas hover:text-ink'}`
+              }
+            >
+              Caixa
+            </NavLink>
+            <button
+              type="button"
+              className={`rounded-lg px-3 py-2 ${newProposalOpen ? 'bg-seal-soft text-seal' : 'hover:bg-canvas hover:text-ink'}`}
+              onClick={openNewProposal}
+            >
+              Nova
+            </button>
             {user && (
               <div className="ml-3 flex items-center gap-2 rounded-full border border-divider bg-white py-1 pl-1 pr-3">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-seal text-[11px] font-semibold text-white">
@@ -55,6 +66,7 @@ function Layout({ children }: { children: React.ReactNode }) {
               type="button"
               className="ml-1 rounded-lg px-3 py-2 hover:bg-canvas hover:text-ink"
               onClick={() => {
+                closeNewProposal()
                 logout()
                 navigate('/')
               }}
@@ -66,6 +78,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             type="button"
             className="btn-ghost px-3 py-2 text-sm md:hidden"
             onClick={() => {
+              closeNewProposal()
               logout()
               navigate('/')
             }}
@@ -79,21 +92,27 @@ function Layout({ children }: { children: React.ReactNode }) {
       <main className="mx-auto max-w-6xl px-4 py-6 md:py-10">{children}</main>
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-divider bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
         <div className="grid grid-cols-2">
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) =>
-                `flex flex-col items-center gap-1 px-2 py-2.5 text-[11px] ${isActive ? 'text-seal' : 'text-ink-muted'}`
-              }
-            >
-              <item.icon size={18} />
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 px-2 py-2.5 text-[11px] ${isActive && !newProposalOpen ? 'text-seal' : 'text-ink-muted'}`
+            }
+          >
+            <FileStack size={18} />
+            Caixa
+          </NavLink>
+          <button
+            type="button"
+            className={`flex flex-col items-center gap-1 px-2 py-2.5 text-[11px] ${newProposalOpen ? 'text-seal' : 'text-ink-muted'}`}
+            onClick={openNewProposal}
+          >
+            <Plus size={18} />
+            Nova
+          </button>
         </div>
       </nav>
+      <NewProposalModal />
     </div>
   )
 }
@@ -114,7 +133,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/p/:token" element={<PublicProposalPage />} />
       <Route path="/" element={<Private><InboxPage /></Private>} />
-      <Route path="/propostas/nova" element={<Private><NewProposalPage /></Private>} />
+      <Route path="/propostas/nova" element={<Private><OpenNewProposal /></Private>} />
       <Route path="/propostas/:id" element={<Private><ProposalDetailPage /></Private>} />
     </Routes>
   )
