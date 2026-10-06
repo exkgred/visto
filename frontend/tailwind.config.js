@@ -4,30 +4,27 @@ export default {
   theme: {
     extend: {
       colors: {
+        canvas: '#f3efe8',
+        surface: '#fffcf7',
+        line: '#e4ddd2',
         ink: {
-          950: '#120c07',
-          900: '#1a140c',
-          800: '#241c12',
-          700: '#352818',
-          500: '#a39480',
-          300: '#efe6d6',
+          DEFAULT: '#1a1814',
+          muted: '#6e675c',
+          faint: '#9a9286',
         },
-        accent: {
-          DEFAULT: '#d4a017',
-          hover: '#b8860b',
-        },
-        paper: {
-          DEFAULT: '#f4efe6',
-          ink: '#2a2218',
-          muted: '#6b5e4e',
+        seal: {
+          DEFAULT: '#7c2430',
+          hover: '#5f1b25',
+          soft: '#f4e6e8',
         },
       },
       boxShadow: {
-        glow: '0 20px 60px rgba(212, 160, 23, 0.14)',
+        sheet: '0 24px 60px -28px rgba(40, 28, 18, 0.28)',
+        card: '0 1px 0 rgba(255,255,255,0.8), 0 12px 32px -18px rgba(40, 28, 18, 0.18)',
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+        sans: ['Figtree', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['Fraunces', 'Georgia', 'serif'],
       },
     },
   },

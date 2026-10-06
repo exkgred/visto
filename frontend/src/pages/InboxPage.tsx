@@ -2,7 +2,17 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Plus } from 'lucide-react'
 import { api, unwrap } from '@/lib/api'
-import { APP_LABEL, EVENT_LABEL, STATUS_LABEL, STATUS_ORDER, formatDate, money, proposalTotal, timeAgo } from '@/lib/brand'
+import {
+  APP_LABEL,
+  EVENT_LABEL,
+  STATUS_LABEL,
+  STATUS_ORDER,
+  STATUS_TONE,
+  formatDate,
+  money,
+  proposalTotal,
+  timeAgo,
+} from '@/lib/brand'
 import type { DashboardKpis, Envelope, Proposal } from '@/lib/types'
 
 export default function InboxPage() {
@@ -22,8 +32,8 @@ export default function InboxPage() {
       .catch(() => setError('Não foi possível carregar a caixa'))
   }, [])
 
-  if (error) return <p className="text-red-400">{error}</p>
-  if (!kpis) return <p className="text-ink-500">Carregando caixa…</p>
+  if (error) return <p className="text-seal">{error}</p>
+  if (!kpis) return <p className="text-ink-muted">Carregando caixa…</p>
 
   const cards = [
     { label: 'Aguardando lacre', value: money(kpis.pendingAmount), hint: 'enviadas + vistas' },
@@ -39,26 +49,23 @@ export default function InboxPage() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-widest text-accent">Caixa</p>
-          <h1 className="mt-1 text-2xl font-semibold text-ink-300">Propostas por estado</h1>
-          <p className="mt-2 max-w-2xl text-sm text-ink-500">
+          <p className="text-xs uppercase tracking-[0.22em] text-seal">Caixa</p>
+          <h1 className="mt-1 font-serif text-3xl font-medium text-ink">Propostas por estado</h1>
+          <p className="mt-2 max-w-2xl text-sm text-ink-muted">
             O Nexo manda. O cliente abre o link. O aceite trava o hash e aponta para o VendaCore.
           </p>
         </div>
-        <Link
-          to="/propostas/nova"
-          className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-ink-950 hover:bg-accent-hover"
-        >
+        <Link to="/propostas/nova" className="btn-seal">
           <Plus size={16} /> Nova proposta
         </Link>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-3">
         {cards.map((card) => (
-          <div key={card.label} className="rounded-2xl border border-white/10 bg-ink-900/70 p-4">
-            <p className="text-xs text-ink-500">{card.label}</p>
-            <p className="mt-2 text-xl font-semibold text-ink-300">{card.value}</p>
-            <p className="mt-1 text-xs text-ink-500">{card.hint}</p>
+          <div key={card.label} className="sheet p-5">
+            <p className="text-xs uppercase tracking-wide text-ink-muted">{card.label}</p>
+            <p className="mt-2 font-serif text-2xl text-ink">{card.value}</p>
+            <p className="mt-1 text-xs text-ink-faint">{card.hint}</p>
           </div>
         ))}
       </div>
@@ -67,25 +74,27 @@ export default function InboxPage() {
         {STATUS_ORDER.map((status) => {
           const bucket = proposals.filter((item) => item.status === status)
           return (
-            <section key={status} className="rounded-2xl border border-white/10 bg-ink-900/40 p-4">
+            <section key={status} className="sheet p-4">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-medium text-ink-300">{STATUS_LABEL[status]}</h2>
-                <span className="text-xs text-ink-500">{bucket.length}</span>
+                <h2 className="text-sm font-medium text-ink">{STATUS_LABEL[status]}</h2>
+                <span className={`rounded-full border px-2 py-0.5 text-[11px] ${STATUS_TONE[status]}`}>
+                  {bucket.length}
+                </span>
               </div>
               <ul className="space-y-2">
-                {bucket.length === 0 && <li className="text-xs text-ink-500">Nenhuma</li>}
+                {bucket.length === 0 && <li className="text-xs text-ink-faint">Nenhuma</li>}
                 {bucket.map((item) => (
                   <li key={item.id}>
                     <Link
                       to={`/propostas/${item.id}`}
-                      className="block rounded-xl border border-white/5 bg-ink-950/40 px-3 py-2.5 hover:border-accent/30"
+                      className="block rounded-xl border border-line bg-white px-3 py-2.5 transition hover:border-seal/30 hover:shadow-card"
                     >
-                      <p className="text-sm text-ink-300">{item.clientName}</p>
-                      <p className="mt-1 flex items-center justify-between text-xs text-ink-500">
+                      <p className="text-sm font-medium text-ink">{item.clientName}</p>
+                      <p className="mt-1 flex items-center justify-between text-xs text-ink-muted">
                         <span>{item.number}</span>
                         <span>{money(proposalTotal(item.items))}</span>
                       </p>
-                      <p className="mt-1 text-[11px] text-ink-500">até {formatDate(item.validUntil)}</p>
+                      <p className="mt-1 text-[11px] text-ink-faint">até {formatDate(item.validUntil)}</p>
                     </Link>
                   </li>
                 ))}
@@ -95,18 +104,18 @@ export default function InboxPage() {
         })}
       </div>
 
-      <section className="rounded-2xl border border-white/10 bg-ink-900/50 p-5">
-        <h2 className="mb-4 font-medium text-ink-300">Últimos eventos</h2>
+      <section className="sheet p-5">
+        <h2 className="mb-4 font-serif text-lg text-ink">Últimos eventos</h2>
         <ul className="space-y-3">
           {kpis.recentEvents.slice(0, 8).map((item) => (
             <li key={item.id} className="flex items-start justify-between gap-3 text-sm">
               <div>
-                <p className="text-ink-300">{EVENT_LABEL[item.type]}</p>
-                <p className="text-xs text-ink-500">
+                <p className="text-ink">{EVENT_LABEL[item.type]}</p>
+                <p className="text-xs text-ink-muted">
                   {APP_LABEL[item.sourceApp] ?? item.sourceApp} · {item.status.toLowerCase()}
                 </p>
               </div>
-              <span className="inline-flex shrink-0 items-center gap-1 text-xs text-ink-500">
+              <span className="inline-flex shrink-0 items-center gap-1 text-xs text-ink-faint">
                 {timeAgo(item.occurredAt)} <ArrowRight size={12} />
               </span>
             </li>

@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Copy, Send } from 'lucide-react'
 import { api, errorMessage, unwrap } from '@/lib/api'
-import { APP_LABEL, EVENT_LABEL, STATUS_LABEL, formatDate, money, proposalTotal, timeAgo } from '@/lib/brand'
+import {
+  APP_LABEL,
+  EVENT_LABEL,
+  STATUS_LABEL,
+  STATUS_TONE,
+  formatDate,
+  money,
+  proposalTotal,
+  timeAgo,
+} from '@/lib/brand'
 import type { Envelope, Proposal, ProposalDetail } from '@/lib/types'
 
 export default function ProposalDetailPage() {
@@ -37,26 +46,26 @@ export default function ProposalDetailPage() {
     }
   }
 
-  if (error && !detail) return <p className="text-red-400">{error}</p>
-  if (!detail) return <p className="text-ink-500">Carregando…</p>
+  if (error && !detail) return <p className="text-seal">{error}</p>
+  if (!detail) return <p className="text-ink-muted">Carregando…</p>
 
   const { proposal, timeline } = detail
   const publicUrl = proposal.publicToken ? `${window.location.origin}/p/${proposal.publicToken}` : null
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-      <div className="space-y-6">
+      <div className="sheet space-y-6 p-6 sm:p-8">
         <header>
-          <p className="text-xs uppercase tracking-widest text-accent">{proposal.number}</p>
-          <h1 className="mt-1 text-2xl font-semibold text-ink-300">{proposal.clientName}</h1>
-          <p className="mt-1 text-sm text-ink-500">{proposal.clientEmail}</p>
-          <span className="mt-3 inline-flex rounded-full bg-accent/15 px-3 py-1 text-xs text-accent">
+          <p className="text-xs uppercase tracking-[0.22em] text-seal">{proposal.number}</p>
+          <h1 className="mt-2 font-serif text-3xl font-medium text-ink">{proposal.clientName}</h1>
+          <p className="mt-1 text-sm text-ink-muted">{proposal.clientEmail}</p>
+          <span className={`mt-4 inline-flex rounded-full border px-3 py-1 text-xs ${STATUS_TONE[proposal.status]}`}>
             {STATUS_LABEL[proposal.status]}
           </span>
         </header>
 
         <table className="w-full text-sm">
-          <thead className="text-left text-ink-500">
+          <thead className="text-left text-ink-muted">
             <tr>
               <th className="pb-2 font-medium">Item</th>
               <th className="pb-2 font-medium">Qtd</th>
@@ -65,7 +74,7 @@ export default function ProposalDetailPage() {
           </thead>
           <tbody>
             {proposal.items.map((item) => (
-              <tr key={item.id} className="border-t border-white/10">
+              <tr key={item.id} className="border-t border-line">
                 <td className="py-2">{item.description}</td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2 text-right">{money(item.amount)}</td>
@@ -73,33 +82,30 @@ export default function ProposalDetailPage() {
             ))}
           </tbody>
         </table>
-        <p className="text-right text-lg font-semibold text-ink-300">{money(proposalTotal(proposal.items))}</p>
-        <p className="text-sm text-ink-500">Válida até {formatDate(proposal.validUntil)}</p>
-        {proposal.message && <p className="rounded-xl border border-white/10 bg-ink-900/50 p-4 text-sm">{proposal.message}</p>}
+        <p className="text-right font-serif text-2xl text-ink">{money(proposalTotal(proposal.items))}</p>
+        <p className="text-sm text-ink-muted">Válida até {formatDate(proposal.validUntil)}</p>
+        {proposal.message && (
+          <p className="rounded-xl border border-line bg-canvas/60 p-4 text-sm">{proposal.message}</p>
+        )}
         {proposal.contentHash && (
-          <p className="break-all font-mono text-[11px] text-ink-500">hash {proposal.contentHash}</p>
+          <p className="break-all font-mono text-[11px] text-ink-faint">hash {proposal.contentHash}</p>
         )}
       </div>
 
-      <aside className="space-y-4">
+      <aside className="space-y-4 pb-8">
         {proposal.status === 'DRAFT' && (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => void send()}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-ink-950 hover:bg-accent-hover disabled:opacity-60"
-          >
+          <button type="button" disabled={busy} onClick={() => void send()} className="btn-seal w-full">
             <Send size={16} /> {busy ? 'Enviando…' : 'Enviar e gerar link'}
           </button>
         )}
         {publicUrl && (
-          <div className="rounded-2xl border border-white/10 bg-ink-900/60 p-4">
-            <p className="text-xs text-ink-500">Link público</p>
-            <p className="mt-2 break-all text-sm text-ink-300">{publicUrl}</p>
-            <div className="mt-3 flex gap-2">
+          <div className="sheet p-5">
+            <p className="text-xs uppercase tracking-wide text-ink-muted">Link público</p>
+            <p className="mt-2 break-all text-sm text-ink">{publicUrl}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
-                className="inline-flex items-center gap-1 rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5"
+                className="btn-ghost px-3 py-1.5 text-xs"
                 onClick={() => {
                   void navigator.clipboard.writeText(publicUrl)
                   setCopied(true)
@@ -107,28 +113,28 @@ export default function ProposalDetailPage() {
               >
                 <Copy size={12} /> {copied ? 'Copiado' : 'Copiar'}
               </button>
-              <Link to={`/p/${proposal.publicToken}`} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs hover:bg-white/5">
+              <Link to={`/p/${proposal.publicToken}`} className="btn-ghost px-3 py-1.5 text-xs">
                 Abrir como cliente
               </Link>
             </div>
-            <p className="mt-3 text-xs text-ink-500">
+            <p className="mt-3 text-xs text-ink-faint">
               {proposal.viewCount} abertura{proposal.viewCount === 1 ? '' : 's'}
             </p>
           </div>
         )}
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        <div className="rounded-2xl border border-white/10 bg-ink-900/40 p-4">
-          <h2 className="mb-3 text-sm font-medium text-ink-300">Linha do tempo</h2>
+        {error && <p className="text-sm text-seal">{error}</p>}
+        <div className="sheet p-5">
+          <h2 className="mb-3 font-serif text-lg text-ink">Linha do tempo</h2>
           <ul className="space-y-3 text-sm">
             {timeline.map((item) => (
               <li key={item.id}>
-                <p className="text-ink-300">{EVENT_LABEL[item.type]}</p>
-                <p className="text-xs text-ink-500">
+                <p className="text-ink">{EVENT_LABEL[item.type]}</p>
+                <p className="text-xs text-ink-muted">
                   {APP_LABEL[item.sourceApp] ?? item.sourceApp} · {timeAgo(item.occurredAt)}
                 </p>
               </li>
             ))}
-            {timeline.length === 0 && <li className="text-xs text-ink-500">Sem eventos ainda</li>}
+            {timeline.length === 0 && <li className="text-xs text-ink-faint">Sem eventos ainda</li>}
           </ul>
         </div>
       </aside>

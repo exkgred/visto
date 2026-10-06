@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Printer } from 'lucide-react'
+import { BrandMark } from '@/components/BrandMark'
 import { Seal } from '@/components/Seal'
 import { api, errorMessage, unwrap } from '@/lib/api'
 import { formatDate, money, proposalTotal } from '@/lib/brand'
@@ -10,7 +11,7 @@ export default function PublicProposalPage() {
   const { token } = useParams()
   const [proposal, setProposal] = useState<Proposal | null>(null)
   const [error, setError] = useState('')
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy] = useState<'accept' | 'decline' | null>(null)
 
   useEffect(() => {
     document.body.classList.add('paper-root')
@@ -27,50 +28,63 @@ export default function PublicProposalPage() {
 
   async function decide(path: 'accept' | 'decline') {
     if (!token) return
-    setBusy(true)
+    setBusy(path)
     setError('')
     try {
-      const { data } = await api.post<Envelope<Proposal>>(`/p/${token}/${path}`, path === 'decline' ? { reason: 'Recusada pelo cliente' } : {})
+      const { data } = await api.post<Envelope<Proposal>>(
+        `/p/${token}/${path}`,
+        path === 'decline' ? { reason: 'Recusada pelo cliente' } : {},
+      )
       setProposal(unwrap(data))
     } catch (err) {
       setError(errorMessage(err))
     } finally {
-      setBusy(false)
+      setBusy(null)
     }
   }
 
   if (error && !proposal) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-16 text-center text-paper-ink">
-        <p className="font-serif text-2xl">Proposta indisponível</p>
-        <p className="mt-2 text-sm text-paper-muted">{error}</p>
+      <div className="mx-auto max-w-xl px-4 py-20 text-center">
+        <BrandMark size={36} className="justify-center" />
+        <p className="mt-8 font-serif text-3xl text-ink">Proposta indisponível</p>
+        <p className="mt-2 text-sm text-ink-muted">{error}</p>
       </div>
     )
   }
-  if (!proposal) return <p className="px-4 py-16 text-center text-paper-muted">Abrindo a proposta…</p>
+  if (!proposal) {
+    return <p className="px-4 py-20 text-center text-ink-muted">Abrindo a proposta…</p>
+  }
 
   const open = proposal.status === 'SENT' || proposal.status === 'VIEWED'
   const accepted = proposal.status === 'ACCEPTED'
 
   return (
-    <div className="min-h-dvh bg-paper px-4 py-10 text-paper-ink">
-      <div className="print-sheet mx-auto max-w-2xl rounded-sm border border-stone-300/80 bg-[#faf6ee] p-8 shadow-[0_20px_50px_rgba(80,50,20,0.08)] sm:p-12">
+    <div className="min-h-dvh px-4 py-8 sm:py-12">
+      <div className="mx-auto mb-6 flex max-w-2xl items-center justify-between no-print">
+        <BrandMark size={28} />
+        <p className="text-xs uppercase tracking-[0.18em] text-ink-faint">documento público</p>
+      </div>
+      <article className="print-sheet sheet mx-auto max-w-2xl p-7 sm:p-12">
+        <div className="rule mb-8" />
         <header className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] text-paper-muted">Visto</p>
-            <h1 className="mt-2 font-serif text-3xl leading-tight sm:text-4xl">Proposta {proposal.number}</h1>
-            <p className="mt-3 text-sm text-paper-muted">
-              Para {proposal.clientName} · válida até {formatDate(proposal.validUntil)}
-            </p>
+            <p className="text-xs uppercase tracking-[0.22em] text-ink-faint">Proposta {proposal.number}</p>
+            <h1 className="mt-3 font-serif text-3xl leading-tight text-ink sm:text-4xl">
+              {proposal.clientName}
+            </h1>
+            <p className="mt-3 text-sm text-ink-muted">Válida até {formatDate(proposal.validUntil)}</p>
           </div>
           {accepted && <Seal />}
         </header>
 
-        {proposal.message && <p className="mt-8 font-serif text-lg leading-relaxed">{proposal.message}</p>}
+        {proposal.message && (
+          <p className="mt-8 font-serif text-lg leading-relaxed text-ink">{proposal.message}</p>
+        )}
 
         <table className="mt-10 w-full text-sm">
           <thead>
-            <tr className="border-b border-stone-300 text-left text-paper-muted">
+            <tr className="border-b border-line text-left text-ink-muted">
               <th className="pb-2 font-medium">Item</th>
               <th className="pb-2 font-medium">Qtd</th>
               <th className="pb-2 text-right font-medium">Valor</th>
@@ -78,7 +92,7 @@ export default function PublicProposalPage() {
           </thead>
           <tbody>
             {proposal.items.map((item) => (
-              <tr key={item.id} className="border-b border-stone-200">
+              <tr key={item.id} className="border-b border-line/70">
                 <td className="py-3">{item.description}</td>
                 <td className="py-3">{item.quantity}</td>
                 <td className="py-3 text-right">{money(item.amount)}</td>
@@ -86,50 +100,48 @@ export default function PublicProposalPage() {
             ))}
           </tbody>
         </table>
-        <p className="mt-6 text-right font-serif text-2xl">{money(proposalTotal(proposal.items))}</p>
+        <p className="mt-6 text-right font-serif text-3xl text-ink">{money(proposalTotal(proposal.items))}</p>
 
         {accepted && proposal.contentHash && (
-          <p className="mt-6 break-all font-mono text-[11px] text-paper-muted">conteúdo travado · {proposal.contentHash}</p>
+          <p className="mt-6 break-all font-mono text-[11px] text-ink-faint">
+            conteúdo travado · {proposal.contentHash}
+          </p>
         )}
         {proposal.status === 'DECLINED' && (
-          <p className="mt-6 text-sm text-paper-muted">Esta proposta foi recusada.</p>
+          <p className="mt-6 text-sm text-ink-muted">Esta proposta foi recusada.</p>
         )}
         {proposal.status === 'EXPIRED' && (
-          <p className="mt-6 text-sm text-paper-muted">Esta proposta expirou.</p>
+          <p className="mt-6 text-sm text-ink-muted">Esta proposta expirou.</p>
         )}
 
-        {error && <p className="no-print mt-4 text-sm text-red-700">{error}</p>}
+        {error && <p className="no-print mt-4 text-sm text-seal">{error}</p>}
 
         <div className="no-print mt-10 flex flex-wrap gap-3">
           {open && (
             <>
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy !== null}
                 onClick={() => void decide('accept')}
-                className="rounded-md bg-[#9a3412] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#7c2d12] disabled:opacity-60"
+                className="btn-seal px-5"
               >
-                {busy ? 'Lacrando…' : 'Aceitar e lacrar'}
+                {busy === 'accept' ? 'Lacrando…' : 'Aceitar e lacrar'}
               </button>
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy !== null}
                 onClick={() => void decide('decline')}
-                className="rounded-md border border-stone-400 px-5 py-2.5 text-sm text-paper-ink hover:bg-stone-100 disabled:opacity-60"
+                className="btn-ghost"
               >
-                Recusar
+                {busy === 'decline' ? 'Recusando…' : 'Recusar'}
               </button>
             </>
           )}
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-md border border-stone-400 px-4 py-2.5 text-sm hover:bg-stone-100"
-          >
+          <button type="button" onClick={() => window.print()} className="btn-ghost">
             <Printer size={14} /> Imprimir / salvar PDF
           </button>
         </div>
-      </div>
+      </article>
     </div>
   )
 }

@@ -54,57 +54,54 @@ export default function NewProposalPage() {
   return (
     <form onSubmit={onSubmit} className="mx-auto max-w-2xl space-y-6">
       <header>
-        <p className="text-xs uppercase tracking-widest text-accent">Rascunho</p>
-        <h1 className="mt-1 text-2xl font-semibold text-ink-300">Nova proposta</h1>
+        <p className="text-xs uppercase tracking-[0.22em] text-seal">Rascunho</p>
+        <h1 className="mt-1 font-serif text-3xl font-medium text-ink">Nova proposta</h1>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm text-ink-500">
-          Cliente
+      <div className="sheet space-y-5 p-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="text-sm text-ink-muted">
+            Cliente
+            <input required className="field" value={clientName} onChange={(e) => setClientName(e.target.value)} />
+          </label>
+          <label className="text-sm text-ink-muted">
+            E-mail
+            <input
+              required
+              type="email"
+              className="field"
+              value={clientEmail}
+              onChange={(e) => setClientEmail(e.target.value)}
+            />
+          </label>
+        </div>
+        <label className="block text-sm text-ink-muted">
+          Validade
           <input
             required
-            className="mt-1 w-full rounded-lg border border-ink-700 bg-ink-800 px-3 py-2.5 text-sm text-ink-300 outline-none focus:border-accent"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
+            type="date"
+            className="field"
+            value={validUntil}
+            onChange={(e) => setValidUntil(e.target.value)}
           />
         </label>
-        <label className="text-sm text-ink-500">
-          E-mail
-          <input
-            required
-            type="email"
-            className="mt-1 w-full rounded-lg border border-ink-700 bg-ink-800 px-3 py-2.5 text-sm text-ink-300 outline-none focus:border-accent"
-            value={clientEmail}
-            onChange={(e) => setClientEmail(e.target.value)}
+        <label className="block text-sm text-ink-muted">
+          Mensagem
+          <textarea
+            rows={3}
+            className="field"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
         </label>
       </div>
-      <label className="block text-sm text-ink-500">
-        Validade
-        <input
-          required
-          type="date"
-          className="mt-1 w-full rounded-lg border border-ink-700 bg-ink-800 px-3 py-2.5 text-sm text-ink-300 outline-none focus:border-accent"
-          value={validUntil}
-          onChange={(e) => setValidUntil(e.target.value)}
-        />
-      </label>
-      <label className="block text-sm text-ink-500">
-        Mensagem
-        <textarea
-          rows={3}
-          className="mt-1 w-full rounded-lg border border-ink-700 bg-ink-800 px-3 py-2.5 text-sm text-ink-300 outline-none focus:border-accent"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </label>
 
-      <div className="space-y-3">
+      <div className="sheet space-y-3 p-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium text-ink-300">Itens</h2>
+          <h2 className="font-serif text-lg text-ink">Itens</h2>
           <button
             type="button"
-            className="inline-flex items-center gap-1 text-xs text-accent"
+            className="inline-flex items-center gap-1 text-xs font-medium text-seal"
             onClick={() => setItems((current) => [...current, emptyItem()])}
           >
             <Plus size={14} /> linha
@@ -115,7 +112,7 @@ export default function NewProposalPage() {
             <input
               required
               placeholder="Descrição"
-              className="rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-sm text-ink-300 outline-none focus:border-accent"
+              className="field mt-0"
               value={item.description}
               onChange={(e) =>
                 setItems((current) =>
@@ -128,7 +125,7 @@ export default function NewProposalPage() {
               type="number"
               min="0.01"
               step="0.01"
-              className="rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-sm text-ink-300 outline-none focus:border-accent"
+              className="field mt-0"
               value={item.quantity}
               onChange={(e) =>
                 setItems((current) =>
@@ -142,7 +139,7 @@ export default function NewProposalPage() {
               min="0"
               step="0.01"
               placeholder="Preço"
-              className="rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-sm text-ink-300 outline-none focus:border-accent"
+              className="field mt-0"
               value={item.unitPrice}
               onChange={(e) =>
                 setItems((current) =>
@@ -152,7 +149,7 @@ export default function NewProposalPage() {
             />
             <button
               type="button"
-              className="rounded-lg border border-white/10 px-2 text-ink-500 hover:text-red-400"
+              className="btn-ghost px-2 text-ink-muted hover:text-seal"
               onClick={() => setItems((current) => current.filter((_, i) => i !== index || current.length === 1))}
             >
               <Trash2 size={14} />
@@ -161,12 +158,8 @@ export default function NewProposalPage() {
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
-      <button
-        type="submit"
-        disabled={busy}
-        className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-ink-950 hover:bg-accent-hover disabled:opacity-60"
-      >
+      {error && <p className="text-sm text-seal">{error}</p>}
+      <button type="submit" disabled={busy} className="btn-seal px-5">
         {busy ? 'Salvando…' : 'Salvar rascunho'}
       </button>
     </form>

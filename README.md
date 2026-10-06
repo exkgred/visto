@@ -116,6 +116,8 @@ O frontend sobe sozinho, sem Nest/Postgres. Com `VITE_DEMO=true` o Axios usa um 
 4. Variável: `VITE_DEMO=true` (já vem em `frontend/.env.production`)
 5. Depois do deploy, troque a URL do card no Átrio pela URL da Vercel
 
+O `vercel.json` da raiz inclui rewrite SPA (`/(.*)` → `index.html`) no serviço frontend. Sem isso, F5 em `/login` ou `/p/:token` devolve 404 da Vercel.
+
 Login da demo: `marina@visto.dev` / `password123`.
 
 Página pública da seed: `/p/demo-sent-acme`.

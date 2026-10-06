@@ -6,7 +6,7 @@ interface BrandMarkProps {
 
 export function BrandMark({ size = 32, className, wordmark = true }: BrandMarkProps) {
   return (
-    <span className={['inline-flex items-center gap-2 font-semibold tracking-tight', className].filter(Boolean).join(' ')}>
+    <span className={['inline-flex items-center gap-2.5 font-serif text-[1.15em] tracking-tight', className].filter(Boolean).join(' ')}>
       <svg
         width={size}
         height={size}
@@ -15,13 +15,12 @@ export function BrandMark({ size = 32, className, wordmark = true }: BrandMarkPr
         className="shrink-0"
         style={{ width: size, height: size }}
       >
-        <rect width="32" height="32" rx="8" fill="#d4a017" />
-        <circle cx="16" cy="16" r="9" fill="#7a4a12" />
+        <rect width="32" height="32" rx="8" fill="#7c2430" />
         <path
-          d="M11.5 16.2l3 3.1 6-6.4"
+          d="M9.5 16.4l4.2 4.3 8.8-9.4"
           fill="none"
-          stroke="#f4efe6"
-          strokeWidth="2.2"
+          stroke="#f8f1e8"
+          strokeWidth="2.4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />

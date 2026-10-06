@@ -40,8 +40,18 @@ export function unwrap<T>(payload: Envelope<T>): T {
 export function errorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as Envelope<unknown> | undefined
-    return data?.error?.message ?? error.message
+    const code = data?.error?.code
+    const message = data?.error?.message ?? error.message
+    if (code === 'RESOURCE_NOT_FOUND' || message === 'Proposal not found') {
+      return 'Esta proposta não existe ou o link expirou'
+    }
+    return message
   }
-  if (error instanceof Error) return error.message
+  if (error instanceof Error) {
+    if (error.message === 'Proposal not found') {
+      return 'Esta proposta não existe ou o link expirou'
+    }
+    return error.message
+  }
   return 'Erro inesperado'
 }
