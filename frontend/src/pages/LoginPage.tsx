@@ -6,8 +6,8 @@ import type { Envelope, PublicUser } from '@/lib/types'
 import { useAuthStore } from '@/stores/auth'
 
 const PERSONAS = [
-  { email: 'marina@visto.dev', label: 'Marina', hint: 'Vendedora — emite o lacre' },
-  { email: 'admin@visto.dev', label: 'Admin', hint: 'Tudo liberado' },
+  { email: 'marina@visto.dev', label: 'Marina Costa', hint: 'Comercial' },
+  { email: 'admin@visto.dev', label: 'Administração', hint: 'Acesso completo' },
 ] as const
 
 export default function LoginPage() {
@@ -43,31 +43,22 @@ export default function LoginPage() {
         <div>
           <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-ink-muted">
             <BrandMark size={22} wordmark={false} />
-            Proposta pública
+            Comercial
           </p>
           <h1 className="mt-10 max-w-md font-serif text-5xl font-medium leading-[1.08] text-ink">
-            O documento que o cliente assina.
+            Propostas com aceite formal.
           </h1>
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-muted">
-            Um link sem login. Um lacre bordô. O hash trava o conteúdo e o handoff aponta para o
-            VendaCore.
+            Emita, envie e acompanhe propostas comerciais. O cliente confirma o documento pelo link
+            recebido. No aceite, o conteúdo original fica registrado e não pode ser alterado.
           </p>
         </div>
 
-        <ol className="mt-16 max-w-sm space-y-4 text-sm text-ink-muted">
-          <li className="flex gap-3">
-            <span className="font-serif text-lg leading-none text-seal">1</span>
-            Nexo publica PropostaEnviada
-          </li>
-          <li className="flex gap-3">
-            <span className="font-serif text-lg leading-none text-seal">2</span>
-            Cliente abre o link e aceita
-          </li>
-          <li className="flex gap-3">
-            <span className="font-serif text-lg leading-none text-seal">3</span>
-            Handoff para o VendaCore
-          </li>
-        </ol>
+        <ul className="mt-16 max-w-sm space-y-4 text-sm text-ink-muted">
+          <li>Emissão, envio e validade sob controle da equipe comercial.</li>
+          <li>O cliente lê e aceita sem criar conta.</li>
+          <li>Cada aceite gera um registro auditável do documento.</li>
+        </ul>
       </aside>
 
       <section className="flex items-center justify-center bg-surface px-4 py-12">
@@ -76,8 +67,8 @@ export default function LoginPage() {
             <BrandMark size={36} />
           </div>
           <div>
-            <h2 className="font-serif text-3xl font-medium text-ink">Entrar no Visto</h2>
-            <p className="mt-1.5 text-sm text-ink-muted">Escolha um crachá. A senha já vem preenchida.</p>
+            <h2 className="font-serif text-3xl font-medium text-ink">Acesso ao sistema</h2>
+            <p className="mt-1.5 text-sm text-ink-muted">Entre com o e-mail corporativo para abrir a caixa de propostas.</p>
           </div>
           <label className="block text-sm font-medium text-ink-muted">
             E-mail
@@ -100,7 +91,7 @@ export default function LoginPage() {
           </label>
           {error && <p className="text-sm text-seal">{error}</p>}
           <button type="submit" disabled={busy} className="btn-seal w-full py-3">
-            {busy ? 'Abrindo a caixa…' : 'Entrar'}
+            {busy ? 'Entrando…' : 'Entrar'}
           </button>
           <div className="grid grid-cols-2 gap-2">
             {PERSONAS.map((persona) => (
