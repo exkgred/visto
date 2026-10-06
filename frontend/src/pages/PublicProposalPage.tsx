@@ -125,7 +125,7 @@ export default function PublicProposalPage() {
                 onClick={() => void decide('accept')}
                 className="btn-seal px-5"
               >
-                {busy === 'accept' ? 'Lacrando…' : 'Aceitar e lacrar'}
+                {busy === 'accept' ? 'Aceitando…' : 'Aceitar'}
               </button>
               <button
                 type="button"

@@ -83,7 +83,7 @@ function seed(): DemoState {
       number: 'VST-0002',
       clientName: 'ACME Ltda',
       clientEmail: 'carla@acme.test',
-      message: 'Proposta do funil Nexo. Abra o lacre quando estiver pronta.',
+      message: 'Proposta do funil Nexo. Confirme o aceite quando estiver de acordo.',
       status: 'SENT',
       validUntil: acmeUntil,
       publicToken: 'demo-sent-acme',
