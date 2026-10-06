@@ -54,33 +54,20 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="relative mt-12 max-w-md">
-          <div className="sheet relative overflow-hidden p-7">
-            <div className="rule mb-5" />
-            <p className="text-[11px] uppercase tracking-[0.2em] text-ink-faint">VST-0002</p>
-            <p className="mt-2 font-serif text-2xl text-ink">Acme Indústria</p>
-            <p className="mt-4 text-sm text-ink-muted">Implantação comercial · válida até 20 out 2026</p>
-            <p className="mt-6 font-serif text-3xl text-ink">R$ 18.500</p>
-            <div className="absolute -right-3 -top-2 rotate-[8deg]">
-              <svg width="72" height="72" viewBox="0 0 92 92" aria-hidden="true">
-                <circle cx="46" cy="46" r="38" fill="#7c2430" />
-                <path
-                  d="M33 47.2l8.4 8.6 17.2-18"
-                  fill="none"
-                  stroke="#f8f1e8"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-          <ol className="mt-8 space-y-2 text-sm text-ink-muted">
-            <li>1. Nexo publica PropostaEnviada</li>
-            <li>2. Cliente abre /p/token e aceita</li>
-            <li>3. Handoff para o VendaCore</li>
-          </ol>
-        </div>
+        <ol className="mt-16 max-w-sm space-y-4 text-sm text-ink-muted">
+          <li className="flex gap-3">
+            <span className="font-serif text-lg leading-none text-seal">1</span>
+            Nexo publica PropostaEnviada
+          </li>
+          <li className="flex gap-3">
+            <span className="font-serif text-lg leading-none text-seal">2</span>
+            Cliente abre o link e aceita
+          </li>
+          <li className="flex gap-3">
+            <span className="font-serif text-lg leading-none text-seal">3</span>
+            Handoff para o VendaCore
+          </li>
+        </ol>
       </aside>
 
       <section className="flex items-center justify-center bg-surface px-4 py-12">
