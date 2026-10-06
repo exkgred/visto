@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: visto-postgres
+    restart: unless-stopped
+    ports:
+      - '5439:5432'
+    environment:
+      POSTGRES_USER: visto
+      POSTGRES_PASSWORD: visto
+      POSTGRES_DB: visto
+    volumes:
+      - visto_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U visto -d visto']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  visto_pg_data:

@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  SELLER
+}
+
+enum ProposalStatus {
+  DRAFT
+  SENT
+  VIEWED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum EventType {
+  PropostaCriada
+  PropostaEnviada
+  PropostaVista
+  PropostaAceita
+  PropostaRecusada
+}
+
+enum EventStatus {
+  RECEIVED
+  PROCESSED
+  PUBLISHED
+  FAILED
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          UserRole       @default(SELLER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
+  proposals     Proposal[]
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+model Proposal {
+  id                  String         @id @default(uuid())
+  number              String         @unique
+  clientName          String
+  clientEmail         String
+  message             String?
+  status              ProposalStatus @default(DRAFT)
+  validUntil          DateTime
+  publicToken         String?        @unique
+  contentHash         String?
+  viewedAt            DateTime?
+  viewCount           Int            @default(0)
+  acceptedAt          DateTime?
+  declinedAt          DateTime?
+  declineReason       String?
+  ownerId             String
+  sourceApp           String         @default("visto")
+  sourceOpportunityId String?
+  correlationId       String?
+  snapshot            Json?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  owner               User           @relation(fields: [ownerId], references: [id])
+  items               ProposalItem[]
+
+  @@index([status])
+  @@index([ownerId])
+  @@index([publicToken])
+}
+
+model ProposalItem {
+  id          String   @id @default(uuid())
+  proposalId  String
+  description String
+  quantity    Float
+  unitPrice   Float
+  amount      Float
+  proposal    Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+}
+
+model DomainEvent {
+  id             String      @id @default(uuid())
+  type           EventType
+  sourceApp      String
+  aggregateType  String
+  aggregateId    String
+  correlationId  String
+  idempotencyKey String      @unique
+  payload        Json
+  status         EventStatus @default(RECEIVED)
+  occurredAt     DateTime    @default(now())
+  publishedAt    DateTime?
+
+  @@index([correlationId, occurredAt])
+  @@index([type])
+  @@index([sourceApp])
+  @@index([aggregateId])
+}
