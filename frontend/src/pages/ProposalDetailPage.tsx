@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Copy, Send } from 'lucide-react'
 import { api, errorMessage, unwrap } from '@/lib/api'
 import {
@@ -101,7 +101,14 @@ export default function ProposalDetailPage() {
         {publicUrl && (
           <div className="sheet p-5">
             <p className="text-xs uppercase tracking-wide text-ink-muted">Link público</p>
-            <p className="mt-2 break-all text-sm text-ink">{publicUrl}</p>
+            <a
+              href={publicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block break-all text-sm text-ink underline-offset-2 hover:underline"
+            >
+              {publicUrl}
+            </a>
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
@@ -113,9 +120,14 @@ export default function ProposalDetailPage() {
               >
                 <Copy size={12} /> {copied ? 'Copiado' : 'Copiar'}
               </button>
-              <Link to={`/p/${proposal.publicToken}`} className="btn-ghost px-3 py-1.5 text-xs">
+              <a
+                href={publicUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-ghost px-3 py-1.5 text-xs"
+              >
                 Abrir como cliente
-              </Link>
+              </a>
             </div>
             <p className="mt-3 text-xs text-ink-faint">
               {proposal.viewCount} abertura{proposal.viewCount === 1 ? '' : 's'}
