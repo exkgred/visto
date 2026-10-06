@@ -26,20 +26,47 @@ body.paper-root {
     linear-gradient(180deg, #ece6dc 0%, #f3efe8 28%);
 }
 
-.field {
-  @apply mt-1 w-full rounded-xl border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-faint focus:border-seal focus:ring-2 focus:ring-seal/15;
-}
+@layer components {
+  .field {
+    @apply mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-sm outline-none transition;
+    border-color: #e4ddd2;
+    color: #1a1814;
+  }
 
-.btn-seal {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-seal px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-seal-hover disabled:opacity-60;
-}
+  .field::placeholder {
+    color: #9a9286;
+  }
 
-.btn-ghost {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:bg-canvas;
-}
+  .field:focus {
+    border-color: #7c2430;
+    box-shadow: 0 0 0 2px rgb(124 36 48 / 0.15);
+  }
 
-.sheet {
-  @apply rounded-2xl border border-line bg-surface shadow-card;
+  .btn-seal {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition disabled:opacity-60;
+    background-color: #7c2430;
+  }
+
+  .btn-seal:hover {
+    background-color: #5f1b25;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-medium transition;
+    border-color: #e4ddd2;
+    color: #1a1814;
+  }
+
+  .btn-ghost:hover {
+    background-color: #f3efe8;
+  }
+
+  .sheet {
+    @apply rounded-2xl border;
+    border-color: #e4ddd2;
+    background-color: #fffcf7;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.8), 0 12px 32px -18px rgb(40 28 18 / 0.18);
+  }
 }
 
 .rule {

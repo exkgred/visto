@@ -22,7 +22,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-dvh pb-24 md:pb-0">
-      <header className="sticky top-0 z-40 border-b border-line/80 bg-surface/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-divider/80 bg-surface/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <NavLink to="/" className="flex shrink-0 items-center text-ink">
             <BrandMark size={32} />
@@ -41,7 +41,7 @@ function Layout({ children }: { children: React.ReactNode }) {
               </NavLink>
             ))}
             {user && (
-              <div className="ml-3 flex items-center gap-2 rounded-full border border-line bg-white py-1 pl-1 pr-3">
+              <div className="ml-3 flex items-center gap-2 rounded-full border border-divider bg-white py-1 pl-1 pr-3">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-seal text-[11px] font-semibold text-white">
                   {initials(user.name)}
                 </span>
@@ -77,7 +77,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6 md:py-10">{children}</main>
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-divider bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
         <div className="grid grid-cols-2">
           {NAV.map((item) => (
             <NavLink

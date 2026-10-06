@@ -123,7 +123,7 @@ export default function LoginPage() {
                 className={`rounded-xl border px-3 py-2.5 text-left transition ${
                   email === persona.email
                     ? 'border-seal/30 bg-seal-soft text-seal'
-                    : 'border-line bg-white text-ink hover:border-seal/20'
+                    : 'border-divider bg-white text-ink hover:border-seal/20'
                 }`}
                 onClick={() => setEmail(persona.email)}
               >

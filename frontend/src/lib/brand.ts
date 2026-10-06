@@ -18,7 +18,7 @@ export const STATUS_LABEL: Record<ProposalStatus, string> = {
 export const STATUS_ORDER: ProposalStatus[] = ['DRAFT', 'SENT', 'VIEWED', 'ACCEPTED', 'DECLINED', 'EXPIRED']
 
 export const STATUS_TONE: Record<ProposalStatus, string> = {
-  DRAFT: 'border-line bg-canvas text-ink-muted',
+  DRAFT: 'border-divider bg-canvas text-ink-muted',
   SENT: 'border-seal/20 bg-seal-soft text-seal',
   VIEWED: 'border-amber-200 bg-amber-50 text-amber-900',
   ACCEPTED: 'border-emerald-200 bg-emerald-50 text-emerald-900',

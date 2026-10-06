@@ -74,7 +74,7 @@ export default function ProposalDetailPage() {
           </thead>
           <tbody>
             {proposal.items.map((item) => (
-              <tr key={item.id} className="border-t border-line">
+              <tr key={item.id} className="border-t border-divider">
                 <td className="py-2">{item.description}</td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2 text-right">{money(item.amount)}</td>
@@ -85,7 +85,7 @@ export default function ProposalDetailPage() {
         <p className="text-right font-serif text-2xl text-ink">{money(proposalTotal(proposal.items))}</p>
         <p className="text-sm text-ink-muted">Válida até {formatDate(proposal.validUntil)}</p>
         {proposal.message && (
-          <p className="rounded-xl border border-line bg-canvas/60 p-4 text-sm">{proposal.message}</p>
+          <p className="rounded-xl border border-divider bg-canvas/60 p-4 text-sm">{proposal.message}</p>
         )}
         {proposal.contentHash && (
           <p className="break-all font-mono text-[11px] text-ink-faint">hash {proposal.contentHash}</p>

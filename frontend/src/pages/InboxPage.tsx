@@ -87,7 +87,7 @@ export default function InboxPage() {
                   <li key={item.id}>
                     <Link
                       to={`/propostas/${item.id}`}
-                      className="block rounded-xl border border-line bg-white px-3 py-2.5 transition hover:border-seal/30 hover:shadow-card"
+                      className="block rounded-xl border border-divider bg-white px-3 py-2.5 transition hover:border-seal/30 hover:shadow-card"
                     >
                       <p className="text-sm font-medium text-ink">{item.clientName}</p>
                       <p className="mt-1 flex items-center justify-between text-xs text-ink-muted">

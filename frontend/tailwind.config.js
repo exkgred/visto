@@ -6,7 +6,7 @@ export default {
       colors: {
         canvas: '#f3efe8',
         surface: '#fffcf7',
-        line: '#e4ddd2',
+        divider: '#e4ddd2',
         ink: {
           DEFAULT: '#1a1814',
           muted: '#6e675c',

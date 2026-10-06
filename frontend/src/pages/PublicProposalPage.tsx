@@ -84,7 +84,7 @@ export default function PublicProposalPage() {
 
         <table className="mt-10 w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-ink-muted">
+            <tr className="border-b border-divider text-left text-ink-muted">
               <th className="pb-2 font-medium">Item</th>
               <th className="pb-2 font-medium">Qtd</th>
               <th className="pb-2 text-right font-medium">Valor</th>
@@ -92,7 +92,7 @@ export default function PublicProposalPage() {
           </thead>
           <tbody>
             {proposal.items.map((item) => (
-              <tr key={item.id} className="border-b border-line/70">
+              <tr key={item.id} className="border-b border-divider/70">
                 <td className="py-3">{item.description}</td>
                 <td className="py-3">{item.quantity}</td>
                 <td className="py-3 text-right">{money(item.amount)}</td>
